@@ -3,6 +3,7 @@
     Ported to Arduino ESP32 by Evandro Copercini
     updates by chegewara
 */
+
 /***************************************************************************
   This is a library for the BME280 humidity, temperature & pressure sensor
 
@@ -29,11 +30,10 @@
 #include <BLEServer.h>
 
 
-//#define SERVICE_UUID        "FB349B5f-8000-0080-0010-00001A180000"
-#define SERVICE_UUID        "0000181A0000-1000-8000-0080-5F9B34FB"
-#define CHARACTERISTIC_HUM_UUID "00002A6F0000-1000-8000-0080-5F9B34FB"
-#define CHARACTERISTIC_PRES_UUID "00002A6D0000-1000-8000-0080-5F9B34FB"
-#define CHARACTERISTIC_TEMP_UUID "00002A6E0000-1000-8000-0080-5F9B34FB"
+#define SERVICE_UUID              "0000181A0000-1000-8000-0080-5F9B34FB"
+#define CHARACTERISTIC_HUM_UUID   "00002A6F0000-1000-8000-0080-5F9B34FB"
+#define CHARACTERISTIC_PRES_UUID  "00002A6D0000-1000-8000-0080-5F9B34FB"
+#define CHARACTERISTIC_TEMP_UUID  "00002A6E0000-1000-8000-0080-5F9B34FB"
 
 // Measurement filters multiplied for matching ESS format
 #define TMAX 6000
@@ -44,29 +44,24 @@
 #define PMIN 960000
 
 #define AVG_CNT 6
+#define DELAY_TIME 10000
 
-#define DELAY_TIME = 10000
-Adafruit_BME280 bme; // I2C
+Adafruit_BME280 bme;              // I2C mode
 BLECharacteristic *pCharacteristicT, *pCharacteristicH, *pCharacteristicP;
 
 void setup() {
+    unsigned status;
+    
     Serial.begin(115200);
     while(!Serial);    // time to get serial running
-    Serial.println(F("BME280 test"));
-
-    unsigned status;
 
     delay(50);
-    // default settings
     status = bme.begin(0x76);
     
     if (!status) {
         Serial.println("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
-        Serial.print("SensorID was: 0x"); Serial.println(bme.sensorID(),16);
-        Serial.print("        ID of 0xFF probably means a bad address, a BMP 180 or BMP 085\n");
-        Serial.print("   ID of 0x56-0x58 represents a BMP 280,\n");
-        Serial.print("        ID of 0x60 represents a BME 280.\n");
-        Serial.print("        ID of 0x61 represents a BME 680.\n");
+        Serial.print("SensorID was: 0x");
+        Serial.println(bme.sensorID(),16);
         while (1) delay(10);
     }
 
